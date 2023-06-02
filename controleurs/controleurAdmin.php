@@ -1,4 +1,5 @@
 <?php
+session_start();
 $action = $_GET["action"];
 
 switch($action){
@@ -10,10 +11,9 @@ switch($action){
         $rep=Admin::verifier($_POST["login"],$_POST["mdp"]);
 
         if ($rep==true){
-            $_SESSION["authorisation"]="OK";
+            $_SESSION['authorisation']="OK";
            
             $lesEleves=Eleve::getLesEleves();
-            
             $lesSeances = Seance::getLesSeances();
            
             include ("vues/accueilAdmin.php");
@@ -25,14 +25,24 @@ switch($action){
     break;
 
     case "deconnexion":
+        $_SESSION['authorisation']="Deco";
         include("vues/accueil.php");
     break;
 
     case "inscription":
+        if($_SESSION["authorisation"]!="OK"){
+            include("vues/formAdmin.php");
+        }
+        else{
         include("vues/inscription.php");
+        }
     break;
 
     case "inscri":
+        if($_SESSION["authorisation"]!="OK"){
+            include("vues/formAdmin.php");
+        }
+        else{
         $NOM = $_POST['nom'];
         $PRENOM = $_POST['prenom'];
         $TEL = $_POST['tel'];
@@ -52,35 +62,62 @@ switch($action){
     
         // Afficher une vue pour confirmer l'ajout de l'adhérent
         include 'vues/confirmation.php';
+        }
     break;
 
     case "accueilAdmin";
+    if($_SESSION["authorisation"]!="OK"){
+        include("vues/formAdmin.php");
+    }
+    else{
         $lesSeances = Seance::getLesSeances();
-        include "vues/accueilAdmin.php";
+        include "vues/accueilAdmin.php";}
     break;
 
     case "listeEleve";
+    if($_SESSION["authorisation"]!="OK"){
+        include("vues/formAdmin.php");
+    }
+    else{
         $lesEleves=Eleve::getLesEleves();
         include "vues/listeEleve.php";
+    }
     break;
 
     case "supprimerEleve":
+        if($_SESSION["authorisation"]!="OK"){
+            include("vues/formAdmin.php");
+        }
+        else{
         $id = intval($_GET['id']);
         Eleve::supprimerEleve($id);
         $lesEleves=Eleve::getLesEleves();
-        include "vues/listeEleve.php";
+        include "vues/listeEleve.php";}
     break;
 
     case "listeProf";
+    if($_SESSION["authorisation"]!="OK"){
+        include("vues/formAdmin.php");
+    }
+    else{
         $lesProfs=Prof::getLesProfs();
-        include "vues/listeProf.php";
+        include "vues/listeProf.php";}
     break;
 
     case"ajouterunProf";
+    if($_SESSION["authorisation"]!="OK"){
+        include("vues/formAdmin.php");
+    }
+    else{
         include "vues/ajouterProf.php";
+    }
     break;
 
     case "ajouterProf";
+    if($_SESSION["authorisation"]!="OK"){
+        include("vues/formAdmin.php");
+    }
+    else{
         $NOM = $_POST['nom'];
         $PRENOM = $_POST['prenom'];
         $TEL = $_POST['tel'];
@@ -95,35 +132,53 @@ switch($action){
 
 
 
-        include "vues/confirmationProf.php";
+        include "vues/confirmationProf.php";}
     break;
 
     //getLesSeances
     case "listeSeance";
-        $lesSeances=Seance::getLesSeances();
-        include "vues/listeSeance.php";
+    //renvoie dans la page de connexion si l'utilisateur n'est pas connecté
+        if($_SESSION["authorisation"]!="OK"){
+            include("vues/formAdmin.php");
+        }
+        else{
+            $lesSeances=Seance::getLesSeances();
+            include "vues/listeSeance.php";
+        }
     break;
 
     case "supprimerProf":
+        if($_SESSION["authorisation"]!="OK"){
+            include("vues/formAdmin.php");
+        }
+        else{
         $id = intval($_GET['id']);
         Prof::supprimerProf($id);
         $lesProfs = Prof::getLesProfs(); // Assumant que vous avez une méthode pour récupérer la liste des professeurs
-        include "vues/listeProf.php";
+        include "vues/listeProf.php";}
     break;
 
 
     case "supprimerSeance":
+        if($_SESSION["authorisation"]!="OK"){
+            include("vues/formAdmin.php");
+        }
+        else{
         $numsceance = intval($_GET['numsceance']);
         Seance::supprimerSeance($numsceance);
-            
         // Récupère à nouveau la liste des séances après la suppression
         $lesSeances = Seance::getLesSeances();
         include "vues/listeSeance.php";
+    }
     break;
 
 
         //utiliser ajouterEleveDansUneSeance
     case "ajouterEleveCour":
+        if($_SESSION["authorisation"]!="OK"){
+            include("vues/formAdmin.php");
+        }
+        else{
         $jour = $_POST["jour"];
         $tranche = $_POST["tranche"];
         $idProf = $_POST["idProf"];
@@ -150,11 +205,15 @@ switch($action){
         }
 
 
-        include "vues/ajouterEleveCour.php";
+        include "vues/ajouterEleveCour.php";}
     break;
 
     //ajouter une seance
     case "ajouteruneSeance":
+        if($_SESSION["authorisation"]!="OK"){
+            include("vues/formAdmin.php");
+        }
+        else{
         // Récupérer les données du formulaire
         $idProf = $_POST["idProf"];
         $numSeance = $_POST["numSeance"];
@@ -167,50 +226,74 @@ switch($action){
        Seance::ajouterSeance($idProf, $numSeance, $tranche, $jour, $niveau, $capacite);
 
         // Rediriger vers une page de confirmation ou une autre action
-        include "vues/listeSeance.php";
+        include "vues/listeSeance.php";}
     break;
 
     case"allerVersAjoutseance":
+        if($_SESSION["authorisation"]!="OK"){
+            include("vues/formAdmin.php");
+        }
+        else{
         $idProf = $_POST["idProf"];
         $lesProfs=Prof::getLesProfs();
-        include "vues/ajouterUneSeanceDuProf.php";
+        include "vues/ajouterUneSeanceDuProf.php";}
     break;
 
     case"ajouterSeance";
+    if($_SESSION["authorisation"]!="OK"){
+        include("vues/formAdmin.php");
+    }
+    else{
         $lesProfs=Prof::getLesProfs();
-            include "vues/ajouterUneSeance.php";
+            include "vues/ajouterUneSeance.php";}
     break;
 
     case"infoSeance";
-
+    if($_SESSION["authorisation"]!="OK"){
+        include("vues/formAdmin.php");
+    }
+    else{
         $numsceance = $_POST["numsceance"]; 
         $Seanceinfo=Seance::getInfoSeance($numsceance);
         $SeanceEleve=Seance::recupEleveSeance($numsceance);
         include "vues/infoSeance.php";
+    }
 
     break;
 
     case"suppEleveSeance";
+    if($_SESSION["authorisation"]!="OK"){
+        include("vues/formAdmin.php");
+    }
+    else{
         $numsceance = $_POST["numsceance"]; 
         $id = $_POST["id"]; 
         Seance::suppEleveSeance($id, $numsceance);
         $Seanceinfo=Seance::getInfoSeance($numsceance);
         $SeanceEleve=Seance::recupEleveSeance($numsceance);
-        include "vues/infoSeance.php";
+        include "vues/infoSeance.php";}
     break;
 
     //ajouter un eleve dans une seance
     case"insertionEleve";
+    if($_SESSION["authorisation"]!="OK"){
+        include("vues/formAdmin.php");
+    }
+    else{
         $numseance = $_POST["numseance"]; 
         $idEleve = $_POST["idEleve"];
         $idProf = $_POST["idProf"]; 
         Seance::insertionEleveDansUneSeance($idProf, $idEleve, $numseance);
         $Seanceinfo=Seance::getInfoSeance($numseance);
         $SeanceEleve=Seance::recupEleveSeance($numseance);
-        include "vues/infoSeance.php";
+        include "vues/infoSeance.php";}
     break;
 
     case"lesTranchesHoraires";
+    if($_SESSION["authorisation"]!="OK"){
+        include("vues/formAdmin.php");
+    }
+    else{
         $jour = $_POST["jour"];
         $tranche = $_POST["tranche"];
         $idProf = $_POST["idProf"];
@@ -234,10 +317,14 @@ switch($action){
                 array_push($lesTranchesHorairesTotal, $uneTranche); 
 
             }
-            }
+            }}
         break;
         
         case "ajouterTrancheDesSeances":
+            if($_SESSION["authorisation"]!="OK"){
+                include("vues/formAdmin.php");
+            }
+            else{
                 $jour = $_POST["jour"];
                 $idProf = $_POST["idProf"];
                 $lesTranchesHoraires = heure::allHoraire();
@@ -260,11 +347,15 @@ switch($action){
                 
                     
 
-            include "vues/ajouterTrancheProfSeance.php";
+            include "vues/ajouterTrancheProfSeance.php";}
         break;
 
             
         case "validerNouvelleSeance":
+            if($_SESSION["authorisation"]!="OK"){
+                include("vues/formAdmin.php");
+            }
+            else{
             $idProf = $_POST["idProf"];
             $jour = $_POST["jour"];
             $tranche = $_POST["tranche"];
@@ -274,6 +365,7 @@ switch($action){
             Seance::ajouterSeance($idProf, $numSeance, $tranche, $jour, $niveau, $capacite);
             $lesSeances = Seance::getLesSeances(); // ajouter cette ligne pour récupérer la nouvelle liste des séances
             include "vues/listeSeance.php";
+        }
         break;    
 }
 ?>

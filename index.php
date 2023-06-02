@@ -1,5 +1,4 @@
 <?php
-
 include "modeles/monPdo.php";
 include "modeles/admin.php";
 include "modeles/personne.php";

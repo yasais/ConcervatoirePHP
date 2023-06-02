@@ -1,5 +1,4 @@
 <?php
-
 class Admin{
     public static function verifier ($login,$mdp)
     {
